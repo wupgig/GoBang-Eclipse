@@ -20,7 +20,7 @@ public class GobangMainApplication extends Application{
 		Global.myIP = inetAddress.getHostAddress();
 
 		UserLogin userLogin = new UserLogin();
-		userLogin.stage = stage;
+		UserLogin.stage = stage;
 		// 显示用户登录界面
 		userLogin.show();
 	}

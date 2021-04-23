@@ -540,14 +540,16 @@ public class ChessBoard extends Stage{
 		double height = screenRectangle.getHeight();
 		
 		ImageView imageView1 = new ImageView("images/李白.jpg");
-		ImageView imageView2 = new ImageView("images/貂蝉.jpg");
-		ImageView imageView3 = new ImageView("images/鹿.jpg");
+		ImageView imageView2 = new ImageView("images/敦刻尔克碧蓝航线.jpg");
+		ImageView imageView3 = new ImageView("images/水墨清明节.jpg");
 		ImageView imageView4 = new ImageView("images/古风美少女伞.jpg");
 		ImageView imageView5 = new ImageView("images/静态山水.jpg");
 		ImageView imageView6 = new ImageView("images/长头发女孩.jpg");
 		ImageView imageView7 = new ImageView("images/雪竹宝剑单马尾.jpg");
 		ImageView imageView8 = new ImageView("images/二次元女孩竹排.jpg");
 		ImageView imageView9 = new ImageView("images/白连衣裙樱花.jpg");
+		ImageView imageView10 = new ImageView("images/貂蝉.jpg");
+		ImageView imageView11 = new ImageView("images/鹿.jpg");
 		imageList.add(imageView1);
 		imageList.add(imageView2);
 		imageList.add(imageView3);
@@ -557,6 +559,8 @@ public class ChessBoard extends Stage{
 		imageList.add(imageView7);
 		imageList.add(imageView8);
 		imageList.add(imageView9);
+		imageList.add(imageView10);
+		imageList.add(imageView11);
 	}
 	/**
 	 * 消息发送文本框，消息显示框
@@ -908,6 +912,12 @@ public class ChessBoard extends Stage{
 				Chess chess = chessList.get(lastIndex);
 				arr[chess.getX()][chess.getY()] = false;
 				colors[chess.getX()][chess.getY()] = null;
+				
+				if (chessList.size() >= 1) {
+					isBlack = !isBlack;
+					isPlay = !isPlay;
+					nowChess.setFill(isBlack ? Color.BLACK : Color.ALICEBLUE);
+				}
 				// 删除棋盘上最后加上的一个棋子和颜色标志
 				pane.getChildren().remove(redCircle);
 				// 移除最后一个棋子
@@ -918,8 +928,7 @@ public class ChessBoard extends Stage{
 					}
 				}
 				chessList.remove(lastIndex);
-				isBlack = !isBlack;
-				isPlay = !isPlay;
+
 				
 				
 				if (!chessList.isEmpty()) {
@@ -961,6 +970,12 @@ public class ChessBoard extends Stage{
 			Chess chess = chessList.get(lastIndex);
 			arr[chess.getX()][chess.getY()] = false;
 			colors[chess.getX()][chess.getY()] = null;
+				if (chessList.size() >= 1) {
+					isBlack = !isBlack;
+					isPlay = !isPlay;
+					nowChess.setFill(isBlack ? Color.BLACK : Color.ALICEBLUE);
+				}
+			
 			// 删除棋盘上最后加上的一个棋子和颜色标志
 			pane.getChildren().remove(redCircle);
 			// 移除最后一个棋子
@@ -971,8 +986,6 @@ public class ChessBoard extends Stage{
 				}
 			}
 			chessList.remove(lastIndex);
-			isBlack = !isBlack;
-			isPlay = !isPlay;
 			
 			
 			if (!chessList.isEmpty()) {
@@ -1023,7 +1036,8 @@ public class ChessBoard extends Stage{
 			this.newGame(newGameMessage);
 		// 对手同意新局
 		} else if (newGameMessage.getState() == NewGameMessage.OK){
-			
+			// 获取对手ip
+			Global.oppoIP = sinfoService.queryIPByAccount(newGameMessage.getAccount()).getAddress();
 			this.startNew(newGameMessage.getAccount());
 		// 对手拒绝新局
 		} else if (newGameMessage.getState() == NewGameMessage.NO) {
@@ -1480,7 +1494,8 @@ public class ChessBoard extends Stage{
 		alert.initOwner(this);
 		Optional<ButtonType> button = alert.showAndWait();
 		if (button.get().getButtonData() == ButtonData.YES) {
-			
+			// 获取对手ip
+			Global.oppoIP = sinfoService.queryIPByAccount(newGameMessage.getAccount()).getAddress();
 			// 随机选择棋子颜色
 			this.selectColor();
 			// 新局初始化
@@ -1516,7 +1531,7 @@ public class ChessBoard extends Stage{
 			SelectChessColorMessage selectChessColor = new SelectChessColorMessage();
 			selectChessColor.setColor(SelectChessColorMessage.WHITE);
 		    // 发送消息
-        	NetUtils.sendMessage(selectChessColor, Global.oppoIP);
+        	NetUtils.sendMessage(selectChessColor, Global.temporaryOppoIP);
 		// 0就是白棋, 发送消息通知对手：你是黑棋
 		} else {
 			this.blackOrWhite = 0;
@@ -1525,7 +1540,7 @@ public class ChessBoard extends Stage{
 			SelectChessColorMessage selectChessColor = new SelectChessColorMessage();
 			selectChessColor.setColor(SelectChessColorMessage.BLACK);
 		    // 发送消息
-        	NetUtils.sendMessage(selectChessColor, Global.oppoIP);
+        	NetUtils.sendMessage(selectChessColor, Global.temporaryOppoIP);
 			
 		}
 	}
